@@ -6,16 +6,16 @@
  */
 
 import React from 'react';
-import {
-  SafeAreaView,
-} from 'react-native';
+import {SafeAreaView} from 'react-native';
 
 import HomePage from './Home';
+import TodoAPP from './TodoApp';
 
 function App(): JSX.Element {
   return (
     <SafeAreaView>
-      <HomePage />
+      {/* <HomePage /> */}
+      <TodoAPP />
     </SafeAreaView>
   );
 }
