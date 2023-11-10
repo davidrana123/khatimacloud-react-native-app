@@ -10,6 +10,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  Modal,
 } from 'react-native';
 import axios from 'axios';
 import {colors} from '../constants/theme';
@@ -26,6 +27,9 @@ const TodoApp = () => {
   const usersUrl = 'https://track-your-item-backend-server.onrender.com/app';
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState(schemaStr);
+  const [editingTodo, setEditingTodo] = useState(null);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [currentEditTodo, setCurrentEditTodo] = useState(schemaStr)
 
   useEffect(() => {
     const getAllData = async () => {
@@ -62,8 +66,37 @@ const TodoApp = () => {
     }
   };
 
+  const editTodo = async (id, user) => {
+    const response = await axios.put(`${usersUrl}/${id}`, user);
+    console.log('response', response);
+  };
+
+
+  const openEditModal = todo => {
+    setEditingTodo(todo);
+    setCurrentEditTodo(todo); // Set the newTodo state to the selected todo for editing
+    setModalVisible(true);
+  };
+
+  const closeEditModal = () => {
+    setEditingTodo(null);
+    setModalVisible(false);
+  };
+
+
+  const saveEditedTodo = async () => {
+    await editTodo(editingTodo._id, currentEditTodo);
+    const res = await axios.get(`${usersUrl}`);
+    setTodos(res.data);
+    setModalVisible(false);
+  };
+
   const handalTextField = (name, value) => {
     setNewTodo({...newTodo, [name]: value});
+  };
+
+  const handalTextFieldEdit = (name, value) => {
+    setCurrentEditTodo({...currentEditTodo, [name]: value});
   };
 
   const isEmptyArray = () => {
@@ -94,6 +127,11 @@ const TodoApp = () => {
                 style={styles.deleteButton}>
                 <Text style={styles.deleteButtonText}>Delete</Text>
               </TouchableOpacity>
+              <TouchableOpacity
+              onPress={() => openEditModal(item)}
+              style={styles.editButton}>
+              <Text style={styles.editButtonText}>Edit</Text>
+            </TouchableOpacity>
             </View>
           )}
         />
@@ -124,6 +162,41 @@ const TodoApp = () => {
           </TouchableOpacity>
         </View>
       </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={closeEditModal}>
+        <View style={styles.modalContainer}>
+          <TextInput
+            style={styles.input}
+            name="taskName"
+            placeholder="Task Name"
+            value={currentEditTodo.taskName}
+            onChangeText={value => handalTextFieldEdit('taskName', value)}
+          />
+          <TextInput
+            style={styles.input}
+            name="taskDesc"
+            placeholder="Description"
+            value={currentEditTodo.taskDesc}
+            onChangeText={value => handalTextFieldEdit('taskDesc', value)}
+          />
+          <TextInput
+            style={styles.input}
+            name="subTask"
+            placeholder="Add sub-task"
+            value={currentEditTodo.subTask}
+            onChangeText={value => handalTextFieldEdit('subTask', value)}
+          />
+          <TouchableOpacity onPress={saveEditedTodo} style={styles.editButton}>
+            <Text style={styles.editButtonText}>Save Changes</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={closeEditModal} style={styles.editButton}>
+            <Text style={styles.editButtonText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </KeyboardAvoidingView>
   );
 };
@@ -186,6 +259,23 @@ const styles = StyleSheet.create({
   },
   subHeading: {
     color: colors.white,
+  },
+  editButton: {
+    backgroundColor: colors.orange, // Choose a color for your edit button
+    padding: 8,
+    borderRadius: 3,
+    marginTop: 5,
+    alignItems: 'center',
+  },
+  editButtonText: {
+    color: colors.black,
+    fontWeight: 'bold',
+  },
+  modalContainer: {
+    backgroundColor: colors.white,
+    padding: 10,
+    borderRadius: 5,
+    margin: 20,
   },
 });
 
