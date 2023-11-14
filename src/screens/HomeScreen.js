@@ -11,7 +11,7 @@ import TripsList from '../components/TripsList';
 const HomeScreen = () => {
   return (
     <View style={styles.container}>
-      <MainHeader style={styles.fontColor} title="Khatimacloud App" />
+      <MainHeader style={styles.fontColor} title="KhatimaCloud" />
       <ScreenHeader mainTitle="Find Your" secondTitle="Interest" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <TopPlacesCarousel list={TOP_PLACES} />

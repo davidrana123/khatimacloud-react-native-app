@@ -29,7 +29,9 @@ const TodoApp = () => {
   const [newTodo, setNewTodo] = useState(schemaStr);
   const [editingTodo, setEditingTodo] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [currentEditTodo, setCurrentEditTodo] = useState(schemaStr)
+  const [currentEditTodo, setCurrentEditTodo] = useState(schemaStr);
+  const [isAddModalVisible, setAddModalVisible] = useState(false);
+
 
   useEffect(() => {
     const getAllData = async () => {
@@ -107,6 +109,14 @@ const TodoApp = () => {
     }
   };
 
+    const openAddModal = () => {
+    setAddModalVisible(true);
+  };
+
+  const closeAddModal = () => {
+    setAddModalVisible(false);
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -135,32 +145,62 @@ const TodoApp = () => {
             </View>
           )}
         />
-        <View style={styles.formContainer}>
-          <TextInput
-            style={styles.input}
-            name="taskName"
-            placeholder="Task Name"
-            value={newTodo.taskName}
-            onChangeText={value => handalTextField('taskName', value)}
-          />
-          <TextInput
-            style={styles.input}
-            name="taskDesc"
-            placeholder="Description"
-            value={newTodo.taskDesc}
-            onChangeText={value => handalTextField('taskDesc', value)}
-          />
-          <TextInput
-            style={styles.input}
-            name="subTask"
-            placeholder="Add sub-task"
-            value={newTodo.subTask}
-            onChangeText={value => handalTextField('subTask', value)}
-          />
-          <TouchableOpacity onPress={addTodo} style={styles.addButton}>
-            <Text style={styles.addButtonText}>Add Todo</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={openAddModal} style={styles.addButton}>
+          <Text style={styles.addButtonText}>Add Todo</Text>
+        </TouchableOpacity>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isAddModalVisible}
+          onRequestClose={closeAddModal}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.header}>Add New Todo</Text>
+              <View style={styles.formContainer}>
+                <TextInput
+                  style={styles.input}
+                  name="taskName"
+                  placeholder="Task Name"
+                  placeholderTextColor="black"
+                  value={newTodo.taskName}
+                  onChangeText={(value) => handalTextField('taskName', value)}
+                />
+                <TextInput
+                  style={styles.input}
+                  name="taskDesc"
+                  placeholder="Description"
+                  placeholderTextColor="black"
+                  value={newTodo.taskDesc}
+                  onChangeText={(value) => handalTextField('taskDesc', value)}
+                />
+                <TextInput
+                  style={styles.input}
+                  name="subTask"
+                  placeholder="Add sub-task"
+                  placeholderTextColor="black"
+                  value={newTodo.subTask}
+                  onChangeText={(value) => handalTextField('subTask', value)}
+                />
+                <TouchableOpacity
+                  onPress={() => {
+                    addTodo();
+                    closeAddModal();
+                  }}
+                  style={styles.addButton}>
+                  <Text style={styles.addButtonTextNew}>Add Todo</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={closeAddModal}
+                  style={styles.editButton}>
+                  <Text style={styles.editButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+
+
       </View>
       <Modal
         animationType="slide"
@@ -172,6 +212,7 @@ const TodoApp = () => {
             style={styles.input}
             name="taskName"
             placeholder="Task Name"
+            placeholderTextColor="black"
             value={currentEditTodo.taskName}
             onChangeText={value => handalTextFieldEdit('taskName', value)}
           />
@@ -179,6 +220,7 @@ const TodoApp = () => {
             style={styles.input}
             name="taskDesc"
             placeholder="Description"
+            placeholderTextColor="black"
             value={currentEditTodo.taskDesc}
             onChangeText={value => handalTextFieldEdit('taskDesc', value)}
           />
@@ -186,6 +228,7 @@ const TodoApp = () => {
             style={styles.input}
             name="subTask"
             placeholder="Add sub-task"
+            placeholderTextColor="black"
             value={currentEditTodo.subTask}
             onChangeText={value => handalTextFieldEdit('subTask', value)}
           />
@@ -236,6 +279,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   addButton: {
+    color: colors.black,
     backgroundColor: colors.blue,
     padding: 10,
     borderRadius: 5,
@@ -243,6 +287,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   addButtonText: {
+    color: colors.white,
+    fontWeight: 'bold',
+  },
+  addButtonTextNew: {
     color: colors.black,
     fontWeight: 'bold',
   },
@@ -276,6 +324,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     margin: 20,
+    borderWidth: 2, // Add this line for the border
+    borderColor: colors.black, // Add this line for the border color
+  },
+  cancelButton: {
+    borderColor: colors.black,
+    borderWidth: 2,
   },
 });
 

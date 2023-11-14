@@ -9,7 +9,7 @@ const MainHeader = ({title}) => {
   return (
     <View style={[styles.container, {marginTop: insets.top + 13}]}>
       <Icon icon="NewMenu" onPress={() => {}} size={30} color="#FFFFFF" />
-      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.title}>David:{title}</Text>
       {/* <Icon icon="newWall" onPress={() => {}} size={30} color="#FFFFFF" /> */}
     </View>
   );

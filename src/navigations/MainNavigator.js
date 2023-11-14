@@ -10,7 +10,7 @@ const Stack = createStackNavigator();
 const MainNavigator = () => {
   return (
     <NavigationContainer>
-      <StatusBar hidden />
+      <StatusBar />
       <Stack.Navigator>
         <Stack.Screen
           name="Root"
